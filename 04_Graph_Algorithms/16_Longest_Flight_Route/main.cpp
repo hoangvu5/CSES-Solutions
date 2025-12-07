@@ -23,26 +23,19 @@ void solve() {
     for (int i = 1; i <= n; i++) {
         if (indeg[i] == 0) qu.push(i);
     }
-    vector<int> topo;
-    while (!qu.empty()) {
-        int u = qu.front(); qu.pop();
-        topo.push_back(u);
-        for (auto &v : adj[u]) {
-            if (--indeg[v] == 0) qu.push(v);
-        }
-    }
     // Longest path + DAG: Topological sort + DP
     // If has cycle, then it's NP-hard
     vector<int> dist(n + 1, INT_MIN);
     vector<int> par(n + 1, -1);
     dist[1] = 0;
-    for (auto &u : topo) {
-        if (dist[u] == INT_MIN) continue;
+    while (!qu.empty()) {
+        int u = qu.front(); qu.pop();
         for (auto &v : adj[u]) {
-            if (dist[u] + 1 > dist[v]) {
+            if (dist[u] != INT_MIN && dist[u] + 1 > dist[v]) {
                 dist[v] = dist[u] + 1;
                 par[v] = u;
             }
+            if (--indeg[v] == 0) qu.push(v);
         }
     }
     if (dist[n] < 0) {
