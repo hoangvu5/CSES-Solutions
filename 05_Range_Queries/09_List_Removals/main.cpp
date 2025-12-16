@@ -35,13 +35,6 @@ template <class T> struct Seg {
             seg[v] = comb(seg[v*2], seg[v*2+1]);
         }
     }
-    T query(int v, int tl, int tr, int l, int r) {
-        if (l > r) return ID;
-        if (l == tl && r == tr) return seg[v];
-        int tm = tl + (tr - tl) / 2;
-        return comb(query(v*2, tl, tm, l, min(r, tm)),
-                    query(v*2+1, tm+1, tr, max(l, tm+1), r));
-    }
     // Return min index i s.t pref[i] >= x
     // For sum tree
     int check(int v, int tl, int tr, T x) {
@@ -52,17 +45,6 @@ template <class T> struct Seg {
             return check(v*2, tl, tm, x);
         else
             return check(v*2+1, tm+1, tr, x - seg[v*2]);
-    }
-    // Return min index i in [l, r] s.t a[i] > x
-    // For max tree
-    int search(int v, int tl, int tr, int l, int r, T x) {
-        if (tl > r || tr < l) return -1;
-        if (seg[v] <= x) return -1;
-        if (tl == tr) return tl;
-        int tm = tl + (tr - tl) / 2;
-        int left = search(v*2, tl, tm, l, r, x);
-        if (left != -1) return left;
-        return search(v*2+1, tm+1, tr, l, r, x);
     }
 };
 
